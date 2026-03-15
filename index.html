@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Mật Mã Hieroglyph – Lời Nguyền Của Các Vị Thần</title>
+    <!-- Thay đổi Font sang Cormorant SC để hỗ trợ chuẩn Tiếng Việt nhưng vẫn giữ nét cổ đại Ai Cập -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #ffd700;
+            --sand: #f4e4bc;
+            --dark: #0f0f1a;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: url('https://i.postimg.cc/g2bX09Kn/jeremy-thomas-E0AHds-ENm-Dg-unsplash.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--sand);
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* SỬA LỖI: Căn giữa toàn bộ màn hình thay vì đẩy lên top */
+            justify-content: center; 
+        }
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            /* SỬA LỖI: Bỏ margin cứng, để container linh hoạt tự nằm giữa */
+            margin: 20px auto; 
+            padding: 25px 30px; 
+            background: rgba(15, 15, 26, 0.85);
+            border-radius: 20px;
+            box-shadow: 0 0 40px rgba(255,215,0,0.25);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            transition: all 0.5s ease;
+        }
+        h1 {
+            font-family: 'Cormorant SC', serif;
+            color: var(--gold);
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin: 0.2em 0;
+            text-shadow: 0 0 15px var(--gold), 0 0 5px #000;
+            font-weight: 700;
+        }
+        h2 {
+            color: var(--gold);
+            font-family: 'Cormorant SC', serif;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            margin: 0.5em 0;
+            font-weight: 700;
+        }
+        p, .question {
+            font-size: clamp(1.1rem, 3.5vw, 1.3rem);
+            line-height: 1.6;
+            margin: 0.8em 0;
+        }
+        .stage {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .stage.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .symbols-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+            padding: 10px;
+        }
+        .symbol {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            color: var(--gold);
+            text-shadow: 0 0 10px var(--dark);
+            text-align: center;
+            transition: transform 0.3s, text-shadow 0.3s;
+            cursor: default;
+        }
+        .symbol:hover {
+            transform: scale(1.2);
+            text-shadow: 0 0 20px var(--gold);
+        }
+        .btn {
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.2rem;
+            padding: 14px 40px;
+            margin: 15px 10px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #b8860b, #ffd700);
+            color: var(--dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(255,215,0,0.4);
+        }
+        .btn:active {
+            transform: translateY(1px);
+        }
+        #result-symbol {
+            font-size: 8rem;
+            margin: 0.2em 0;
+            color: var(--gold);
+            text-shadow: 0 0 30px var(--gold);
+            animation: pulse 2s infinite;
+        }
+        #result-meaning {
+            font-size: 1.5rem;
+            color: #e0c080;
+            font-style: italic;
+            padding: 0 20px;
+        }
+        .thinking-gif {
+            max-width: 300px;
+            width: 100%;
+            height: auto;
+            margin: 20px auto;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(255,215,0,0.3);
+        }
+        audio { display: none; }
+        
+        @keyframes pulse {
+            0% { text-shadow: 0 0 20px var(--gold); transform: scale(1); }
+            50% { text-shadow: 0 0 40px var(--gold), 0 0 60px #fff; transform: scale(1.05); }
+            100% { text-shadow: 0 0 20px var(--gold); transform: scale(1); }
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 20px 15px; width: 95%; }
+            .symbols-grid { grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 10px; }
+            .btn { padding: 12px 30px; font-size: 1.1rem; width: 100%; box-sizing: border-box; margin: 10px 0;}
+            .symbol { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Stage 1: Chọn biểu tượng (32 ký tự) -->
+    <div id="stage-select" class="stage visible">
+        <h1>Mật Mã Hieroglyph</h1>
+        <p>Hãy để các vị thần Ai Cập tiết lộ bí mật bạn đang giữ...</p>
+        <p>Chọn một biểu tượng duy nhất từ 32 biểu tượng cổ xưa dưới đây và giữ chặt trong tâm trí. Đừng nói ra.</p>
+        <div class="symbols-grid" id="selectSymbols"></div>
+        <button class="btn" onclick="goToGuide()">Tôi đã chọn xong →</button>
+    </div>
+
+    <!-- Stage 2: Hướng dẫn -->
+    <div id="stage-guide" class="stage" style="display:none;">
+        <h1>Nghi Thức Bắt Đầu</h1>
+        <p>Tôi sẽ triệu hồi 5 tấm bùa cổ đại. Mỗi tấm chứa một phần năng lượng huyền bí.</p>
+        <p>Trả lời <strong>"Có"</strong> nếu biểu tượng bạn nghĩ có xuất hiện trong tấm bùa đó, <strong>"Không"</strong> nếu không.</p>
+        <button class="btn" onclick="startQuestions()">Bắt đầu nghi thức →</button>
+    </div>
+
+    <!-- Stage 3: Các nhóm hỏi -->
+    <div id="stage-question" class="stage" style="display:none;">
+        <h2>Tấm bùa thứ <span id="groupNumber"></span></h2>
+        <p id="questionText" class="question"></p>
+        <div class="symbols-grid" id="groupSymbols"></div>
+        <button class="btn" onclick="answer(true)">Có</button>
+        <button class="btn" onclick="answer(false)">Không</button>
+    </div>
+
+    <!-- Stage 4: Các vị thần đang đọc suy nghĩ -->
+    <div id="stage-thinking" class="stage" style="display:none;">
+        <h1>Đang đọc tâm trí...</h1>
+        <p>Hãy chờ đợi... Năng lượng đang được triệu hồi từ sa mạc cổ xưa.</p>
+        <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExYjUyMzNyamgxMGxzaG81OTFhMmQ1eGlkdGxvb2ZoY2cyc3d3OTk0ZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/I3jlx6n8FD1bXbGisC/giphy.gif" alt="Các vị thần đọc suy nghĩ" class="thinking-gif">
+        <br>
+        <button class="btn" onclick="showResult()">Tiếp theo →</button>
+    </div>
+
+    <!-- Stage 5: Kết quả -->
+    <div id="stage-result" class="stage" style="display:none;">
+        <h1>Lời tiên tri đã được tiết lộ</h1>
+        <p>Các vị thần biết rằng, biểu tượng bạn đã chọn là <strong id="result-name" style="color:var(--gold); font-size: 1.3em;"></strong>.</p>
+        <div id="result-symbol"></div>
+        <p id="result-meaning"></p>
+        <button class="btn" onclick="restart()">Thực hiện nghi thức lại</button>
+    </div>
+</div>
+
+<!-- Âm thanh -->
+<audio id="windAudio" preload="auto" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_2d8d9d8e0a.mp3?filename=desert-wind-ambient-loop-162996.mp3" type="audio/mpeg">
+</audio>
+<audio id="chimeAudio" preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2022/01/18/audio_8f2c8f2c8f.mp3?filename=ancient-bell-chime.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+    const symbols =[
+        { char: "𓂀", name: "Mắt Horus", meaning: "Bảo vệ, sức mạnh thần thánh và sự chữa lành" },
+        { char: "𓋹", name: "Ankh", meaning: "Sự sống vĩnh cửu, hơi thở của các vị thần" },
+        { char: "𓅃", name: "Chim ưng Horus", meaning: "Chiến thắng, quyền lực và tầm nhìn xa" },
+        { char: "𓆣", name: "Scarab", meaning: "Tái sinh, chuyển hóa và sức mạnh mặt trời" },
+        { char: "𓇳", name: "Mặt trời Ra", meaning: "Ánh sáng, sáng tạo và sức mạnh hoàng gia" },
+        { char: "𓁿", name: "Osiris", meaning: "Phục sinh, thế giới bên kia và công lý" },
+        { char: "𓉐", name: "Ngôi đền", meaning: "Nơi trú ẩn linh hồn và sự thiêng liêng" },
+        { char: "𓂝", name: "Cánh tay", meaning: "Sức mạnh hành động và ban ơn" },
+        { char: "𓃀", name: "Chân", meaning: "Hành trình linh hồn và sự di chuyển" },
+        { char: "𓄤", name: "Trái tim", meaning: "Tình yêu, cảm xúc và sự thật" },
+        { char: "𓆸", name: "Hoa sen", meaning: "Sự tinh khiết, tái sinh và giác ngộ" },
+        { char: "𓅱", name: "Chim bồ câu", meaning: "Linh hồn và sự tự do" },
+        { char: "𓇯", name: "Bầu trời", meaning: "Vô hạn, thần Nut và sự che chở" },
+        { char: "𓆑", name: "Rắn hổ mang", meaning: "Bảo vệ và sức mạnh nữ thần" },
+        { char: "𓍝", name: "Vương miện trắng", meaning: "Thống trị Thượng Ai Cập và sự thuần khiết" },
+        { char: "𓌳", name: "Chiếc liềm", meaning: "Sự ổn định và trật tự vũ trụ" },
+        { char: "𓎛", name: "Bia đá", meaning: "Ký ức vĩnh cửu và lời thề" },
+        { char: "𓏏", name: "Bánh mì", meaning: "Sự nuôi dưỡng và của cải" },
+        { char: "𓄂", name: "Đầu bò", meaning: "Sức mạnh và sự phì nhiêu" },
+        { char: "𓆄", name: "Lông vũ Maat", meaning: "Sự thật, công lý và chu kỳ vĩnh cửu" },
+        { char: "𓇋", name: "Cây sậy", meaning: "Sự phát triển và sự sống" },
+        { char: "𓊵", name: "Bàn thờ", meaning: "Cúng tế và kết nối với thần linh" },
+        { char: "𓍯", name: "Vương miện đỏ", meaning: "Thống trị Hạ Ai Cập và sức mạnh đất đai" },
+        { char: "𓎼", name: "Cây papyrus", meaning: "Sự sáng tạo và kiến thức" },
+        { char: "𓁹", name: "Mắt", meaning: "Tầm nhìn và sự thật" },
+        { char: "𓂧", name: "Bàn tay", meaning: "Lời nói và sức mạnh sáng tạo" },
+        { char: "𓅭", name: "Chim cò ibis", meaning: "Trí tuệ và thần Thoth" },
+        { char: "𓆙", name: "Rắn", meaning: "Bảo vệ và sự nguy hiểm" },
+        { char: "𓇅", name: "Cây cọ", meaning: "Sự sống và chiến thắng" },
+        { char: "𓈖", name: "Nước", meaning: "Sự hỗn loạn và nguồn gốc" },
+        { char: "𓉔", name: "Cánh cửa", meaning: "Lối vào thế giới bên kia" },
+        { char: "𓊹", name: "Cờ thần", meaning: "Sự hiện diện của các vị thần" }
+    ];
+
+    const groups =[
+        { value: 1 },
+        { value: 2 },
+        { value: 4 },
+        { value: 8 },
+        { value: 16 }
+    ];
+
+    let currentGroup = 0;
+    let total = 0;
+
+    const windAudio = document.getElementById('windAudio');
+    const chimeAudio = document.getElementById('chimeAudio');
+
+    function fadeOut(el, callback) {
+        el.classList.remove('visible');
+        setTimeout(() => {
+            // SỬA LỖI: Thêm dòng này để ẩn hoàn toàn phần tử cũ, giúp container tự thu nhỏ lại
+            el.style.display = 'none'; 
+            if (callback) callback();
+        }, 600); // Rút ngắn hiệu ứng fade một chút để bớt chờ đợi
+    }
+
+    function fadeIn(el) {
+        el.style.display = 'block';
+        setTimeout(() => el.classList.add('visible'), 50);
+    }
+
+    function goToGuide() {
+        fadeOut(document.getElementById('stage-select'), () => {
+            fadeIn(document.getElementById('stage-guide'));
+        });
+    }
+
+    function startQuestions() {
+        fadeOut(document.getElementById('stage-guide'), () => {
+            fadeIn(document.getElementById('stage-question'));
+            showGroup(0);
+        });
+    }
+
+    function showGroup(index) {
+        currentGroup = index;
+        document.getElementById('groupNumber').textContent = index + 1;
+        document.getElementById('questionText').innerHTML = "Biểu tượng bạn đang nghĩ có xuất hiện trong tấm bùa cổ đại này không?";
+
+        const container = document.getElementById('groupSymbols');
+        container.innerHTML = '';
+
+        // Hiệu ứng blink nhẹ khi load nhóm mới
+        container.style.opacity = 0;
+        
+        for (let i = 0; i < symbols.length; i++) {
+            if (i & groups[index].value) {
+                const sym = symbols[i];
+                const div = document.createElement('div');
+                div.className = 'symbol';
+                div.textContent = sym.char;
+                container.appendChild(div);
+            }
+        }
+
+        setTimeout(() => { container.style.opacity = 1; container.style.transition = 'opacity 0.5s'; }, 50);
+
+        windAudio.currentTime = 0;
+        windAudio.play().catch(() => {});
+    }
+
+    window.answer = function(yes) {
+        if (yes) {
+            total += groups[currentGroup].value;
+        }
+        currentGroup++;
+        if (currentGroup < groups.length) {
+            showGroup(currentGroup);
+        } else {
+            fadeOut(document.getElementById('stage-question'), () => {
+                fadeIn(document.getElementById('stage-thinking'));
+            });
+        }
+    };
+
+    function showResult() {
+        fadeOut(document.getElementById('stage-thinking'), () => {
+            fadeIn(document.getElementById('stage-result'));
+
+            const symbol = symbols[total];
+            document.getElementById('result-symbol').textContent = symbol.char;
+            document.getElementById('result-name').textContent = symbol.name;
+            document.getElementById('result-meaning').textContent = symbol.meaning;
+
+            windAudio.pause();
+            chimeAudio.currentTime = 0;
+            chimeAudio.play().catch(() => {});
+        });
+    }
+
+    function restart() {
+        total = 0;
+        currentGroup = 0;
+        fadeOut(document.getElementById('stage-result'), () => {
+            fadeIn(document.getElementById('stage-select'));
+        });
+    }
+
+    // Khởi tạo 32 biểu tượng ở slide chọn
+    function initSelectSymbols() {
+        const grid = document.getElementById('selectSymbols');
+        symbols.forEach(sym => {
+            const div = document.createElement('div');
+            div.className = 'symbol';
+            div.textContent = sym.char;
+            grid.appendChild(div);
+        });
+    }
+
+    // Start
+    initSelectSymbols();
+    document.getElementById('stage-select').classList.add('visible');
+</script>
+
+</body>
+</html>
